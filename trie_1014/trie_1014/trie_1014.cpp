@@ -5,27 +5,15 @@
 using namespace std;
 
 typedef struct trie_node {
-	//int count;
+	int count;
 	trie_node *next[26];
 };
 
 trie_node* create_trie_node() {
 	trie_node *node = new trie_node;
-	//node->count = 0;
+	node->count = 1;
 	for (int i = 0; i < 26; ++i) node->next[i] = NULL;
 	return node;
-}
-
-int calculate_nodes(trie_node* ptr) {
-	int num = 0;
-	//if (ptr == NULL) return 1;
-	for (int i = 0; i < 26; ++i) {
-		if (ptr->next[i] != NULL) {
-			num += calculate_nodes(ptr->next[i]);
-		}
-	}
-	if (num == 0) num = 1;
-	return num;
 }
 
 int search_trie(trie_node* head, const string& word) {
@@ -40,11 +28,9 @@ int search_trie(trie_node* head, const string& word) {
 			return 0;
 		}
 	}
-	int count = calculate_nodes(ptr);
+	int count = ptr->count; 
 	return count;
 }
-
-
 
 void build_trie(trie_node* ptr, const string& word) {
 	if (ptr == NULL) return ;
@@ -52,10 +38,11 @@ void build_trie(trie_node* ptr, const string& word) {
 	for (; i < word.size(); ++i) {
 		if (ptr->next[word[i] - 'a'] != NULL) {
 			ptr = ptr->next[word[i] - 'a'];
+			ptr->count++;
 		}
 		else {
-			//ptr->count++;
 			ptr->next[word[i] - 'a'] = create_trie_node();
+			ptr = ptr->next[word[i] - 'a'];
 		}
 	}
 }
